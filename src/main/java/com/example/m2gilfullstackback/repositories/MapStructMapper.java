@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 @Mapper(
         componentModel = "spring"
 )
-@Repository
 public interface MapStructMapper {
     ShopGetDto shopToShopGetDto(Shop shop);
     Shop shopPostDtoToShop(ShopPostDto shopPostDto);

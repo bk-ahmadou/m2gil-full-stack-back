@@ -1,31 +1,69 @@
 package com.example.m2gilfullstackback.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.istack.NotNull;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
+import java.util.UUID;
 
-@Getter @Setter
 public class ShopPostDto {
-    @NotNull
+    @JsonProperty("id")
+    private UUID id;
+
     @JsonProperty("name")
     private String name;
 
-    @NotNull
     @JsonProperty("isHoliday")
     private Boolean isHoliday;
 
-    @NotNull
     @JsonProperty("openingTime")
+    @Temporal(TemporalType.TIME)
     private Date openingTime;
 
-    @NotNull
+    @Temporal(TemporalType.TIME)
     @JsonProperty("closingTime")
     private Date closingTime;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Boolean getHoliday() {
+        return isHoliday;
+    }
+
+    public void setHoliday(Boolean holiday) {
+        isHoliday = holiday;
+    }
+
+    public Date getOpeningTime() {
+        return openingTime;
+    }
+
+    public void setOpeningTime(Date openingTime) {
+        this.openingTime = openingTime;
+    }
+
+    public Date getClosingTime() {
+        return closingTime;
+    }
+
+    public void setClosingTime(Date closingTime) {
+        this.closingTime = closingTime;
+    }
 }

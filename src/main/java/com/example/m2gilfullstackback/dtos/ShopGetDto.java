@@ -8,8 +8,46 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.UUID;
 
-@Getter @Setter
 public class ShopGetDto {
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Boolean getHoliday() {
+        return isHoliday;
+    }
+
+    public void setHoliday(Boolean holiday) {
+        isHoliday = holiday;
+    }
+
+    public Date getOpeningTime() {
+        return openingTime;
+    }
+
+    public void setOpeningTime(Date openingTime) {
+        this.openingTime = openingTime;
+    }
+
+    public Date getClosingTime() {
+        return closingTime;
+    }
+
+    public void setClosingTime(Date closingTime) {
+        this.closingTime = closingTime;
+    }
 
     @JsonProperty("id")
     private UUID id;

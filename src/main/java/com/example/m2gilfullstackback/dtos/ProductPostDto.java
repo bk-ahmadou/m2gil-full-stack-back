@@ -8,7 +8,6 @@ import lombok.Setter;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 
-@Getter @Setter
 public class ProductPostDto {
     @NotNull
     @JsonProperty("name")
@@ -17,4 +16,20 @@ public class ProductPostDto {
     @NotNull
     @JsonProperty("price")
     private float price;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
 }
