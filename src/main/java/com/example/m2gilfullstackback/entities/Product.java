@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.UUID;
 @Table(name = "Product")
 @Entity
@@ -16,14 +17,13 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    @Column
+    @Column(nullable = false)
     @Basic
-    private float price;
+    private Float price;
 
     @Column
     @Basic
     private String description;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sho_id")
     private Shop shop;
@@ -44,11 +44,11 @@ public class Product {
         this.name = name;
     }
 
-    public float getPrice() {
+    public Float getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(Float price) {
         this.price = price;
     }
 

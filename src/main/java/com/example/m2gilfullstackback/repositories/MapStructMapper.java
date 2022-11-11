@@ -25,4 +25,7 @@ public interface MapStructMapper {
 
     ProductGetDto productToProductGetDto(Product product);
     Product productPostDtoToProduct(ProductPostDto productPostDto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateProductFromDto(ProductGetDto dto, @MappingTarget Product product);
 }

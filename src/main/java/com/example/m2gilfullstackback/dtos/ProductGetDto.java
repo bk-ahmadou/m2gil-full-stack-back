@@ -9,13 +9,11 @@ public class ProductGetDto {
     @JsonProperty("id")
     private UUID id;
 
-    @NotNull
     @JsonProperty("name")
     private String name;
 
-    @NotNull
     @JsonProperty("price")
-    private float price;
+    private Float price;
 
     @JsonProperty("description")
     private String description;
@@ -36,11 +34,11 @@ public class ProductGetDto {
         this.name = name;
     }
 
-    public float getPrice() {
+    public Float getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(Float price) {
         this.price = price;
     }
 

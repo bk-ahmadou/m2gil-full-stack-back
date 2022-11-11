@@ -29,6 +29,10 @@ public class Shop {
     @Temporal(TemporalType.TIME)
     private Date closingTime;
 
+    @Basic
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date CreationDateTime = new Date();
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "shop")
     private List<Product> products;
 
@@ -71,12 +75,18 @@ public class Shop {
     public void setClosingTime(Date closingTime) {
         this.closingTime = closingTime;
     }
-
     public List<Product> getProducts() {
         return products;
     }
-
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+
+    public Date getCreationDateTime() {
+        return CreationDateTime;
+    }
+
+    public void setCreationDateTime(Date creationDateTime) {
+        CreationDateTime = creationDateTime;
     }
 }
