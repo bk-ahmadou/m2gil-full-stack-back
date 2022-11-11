@@ -10,9 +10,6 @@ import java.util.Date;
 import java.util.UUID;
 
 public class ShopPostDto {
-    @JsonProperty("id")
-    private UUID id;
-
     @JsonProperty("name")
     private String name;
 
@@ -26,14 +23,6 @@ public class ShopPostDto {
     @Temporal(TemporalType.TIME)
     @JsonProperty("closingTime")
     private Date closingTime;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

@@ -7,15 +7,26 @@ import lombok.Setter;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import java.util.UUID;
 
 public class ProductPostDto {
-    @NotNull
+
+    @JsonProperty("id")
+    private UUID id;
+
     @JsonProperty("name")
     private String name;
 
-    @NotNull
     @JsonProperty("price")
     private float price;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

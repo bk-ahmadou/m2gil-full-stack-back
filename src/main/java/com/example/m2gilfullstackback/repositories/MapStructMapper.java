@@ -6,8 +6,12 @@ import com.example.m2gilfullstackback.dtos.ShopGetDto;
 import com.example.m2gilfullstackback.dtos.ShopPostDto;
 import com.example.m2gilfullstackback.entities.Product;
 import com.example.m2gilfullstackback.entities.Shop;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
-import org.springframework.stereotype.Repository;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+
+import java.util.Optional;
 
 @Mapper(
         componentModel = "spring"
@@ -15,6 +19,9 @@ import org.springframework.stereotype.Repository;
 public interface MapStructMapper {
     ShopGetDto shopToShopGetDto(Shop shop);
     Shop shopPostDtoToShop(ShopPostDto shopPostDto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateShopFromDto(ShopGetDto dto, @MappingTarget Shop shop);
 
     ProductGetDto productToProductGetDto(Product product);
     Product productPostDtoToProduct(ProductPostDto productPostDto);

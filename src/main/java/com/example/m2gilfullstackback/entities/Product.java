@@ -24,7 +24,7 @@ public class Product {
     @Basic
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sho_id")
     private Shop shop;
 
