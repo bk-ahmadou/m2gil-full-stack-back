@@ -38,6 +38,19 @@ public class Product {
     )
     private List<Category> categories = new ArrayList<>();
 
+    public void removeCategory(UUID categoryId){
+        Category category = this.categories.stream().filter(c ->c.getId() == categoryId).findFirst().orElse(null);
+        if(category != null){
+            this.categories.remove(category);
+            category.getProducts().remove(this);
+        }
+    }
+
+    public void addCategory(Category category){
+        this.categories.add(category);
+        category.getProducts().add(this);
+    }
+
     public UUID getId() {
         return id;
     }

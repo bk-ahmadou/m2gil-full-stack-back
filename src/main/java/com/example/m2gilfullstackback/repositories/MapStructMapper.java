@@ -34,6 +34,8 @@ public interface MapStructMapper {
     CategoryGetDto categoryToCategoryGetDto(Category category);
     Category categoryPostDtoToCategory(CategoryPostDto categoryPostDto);
     Category categoryGetDtoToCategory(CategoryGetDto categoryGetDto);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateCategoryFromDto(CategoryGetDto dto, @MappingTarget Category category);
 }
 
 
