@@ -2,13 +2,11 @@ package com.example.m2gilfullstackback.controllers;
 
 import com.example.m2gilfullstackback.dtos.ProductGetDto;
 import com.example.m2gilfullstackback.dtos.ProductPostDto;
-import com.example.m2gilfullstackback.dtos.ShopGetDto;
 import com.example.m2gilfullstackback.entities.Product;
-import com.example.m2gilfullstackback.entities.Shop;
+import com.example.m2gilfullstackback.exceptions.ResourceNotFoundException;
 import com.example.m2gilfullstackback.repositories.MapStructMapper;
 import com.example.m2gilfullstackback.repositories.ProductRepository;
 import com.example.m2gilfullstackback.repositories.ShopRepository;
-import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -19,7 +17,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 public class ProductController {
 
     private MapStructMapper mapStructMapper;
@@ -33,7 +31,7 @@ public class ProductController {
         this.shopRepository = shopRepository;
     }
 
-    @PostMapping(value = "/shop/{shopId}/products", consumes = {"application/json"})
+    @PostMapping(value = "/shops/{shopId}/products", consumes = {"application/json"})
     public ResponseEntity<Void> createProduct(@PathVariable UUID shopId, @RequestBody ProductPostDto productPostDto){
 
         Product entity = mapStructMapper.productPostDtoToProduct(productPostDto);
@@ -41,7 +39,7 @@ public class ProductController {
         shopRepository.findById(shopId).map(shop -> {
             entity.setShop(shop);
             return productRepository.save(entity);
-        }).orElseThrow(()-> new RuntimeException("Not found shop by id "+ shopId)); // notfoundexception without runtimeexception
+        }).orElseThrow(()-> new ResourceNotFoundException("Not found shop by id "+ shopId));
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

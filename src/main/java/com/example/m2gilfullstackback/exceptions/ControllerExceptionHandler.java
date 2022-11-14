@@ -20,7 +20,7 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<ErrorMessage>(message,HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(Exception.class)
+    /*@ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> globalExceptionHandler(Exception ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
@@ -29,5 +29,5 @@ public class ControllerExceptionHandler {
                 request.getDescription(false));
 
         return new ResponseEntity<ErrorMessage>(message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    }*/
 }

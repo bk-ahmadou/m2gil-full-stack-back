@@ -33,12 +33,14 @@ public class CategoryController {
         this.mapStructMapper = mapStructMapper;
     }
 
-    @GetMapping("/categories")
-    public ResponseEntity<List<Category>> getAllCategories(){
+    @GetMapping(value = "/categories", produces = {"application/json"})
+    public ResponseEntity<List<CategoryGetDto>> getAllCategories(){
 
-        List<Category> categories = new ArrayList<>();
+        List<CategoryGetDto> categories = new ArrayList<>();
 
-        categoryRepository.findAll().forEach(categories::add);
+        categoryRepository.findAll().forEach(category -> {
+            categories.add(mapStructMapper.categoryToCategoryGetDto(category));
+        });
 
         if(categories.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -48,37 +50,38 @@ public class CategoryController {
     }
 
     @GetMapping("/categories/{id}")
-    public ResponseEntity<Category> getCategory(@PathVariable UUID id){
+    public ResponseEntity<CategoryGetDto> getCategory(@PathVariable UUID id){
 
         Category category = categoryRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Category does not exist"));
 
-        return new ResponseEntity<>(category, HttpStatus.OK);
+        return new ResponseEntity<>(mapStructMapper.categoryToCategoryGetDto(category), HttpStatus.OK);
     }
 
     @GetMapping("/products/{productId}/categories")
-    public ResponseEntity<List<Category>> getAllProductCategories(@PathVariable UUID productId){
+    public ResponseEntity<List<CategoryGetDto>> getAllProductCategories(@PathVariable UUID productId){
 
-        if(!categoryRepository.existsById(productId)){
+        if(!productRepository.existsById(productId)){
             throw  new ResourceNotFoundException("Not found product");
         }
 
-        List<Category> categories = categoryRepository.findCategoriesByProductsId(productId);
+        List<CategoryGetDto> categories = new ArrayList<>();
+        categoryRepository.findCategoriesByProductsId(productId).forEach(category -> {
+            categories.add(mapStructMapper.categoryToCategoryGetDto(category));
+        });
 
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    @PutMapping("/categories/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable UUID id, @RequestBody CategoryGetDto categoryGetDto){
-
-        if(!Objects.equals(id, categoryGetDto.getId())){
-            throw new IllegalArgumentException("IDs don't match");
-        }
+    @PatchMapping(value = "/categories/{id}")
+    public ResponseEntity<CategoryGetDto> updateCategory(@PathVariable UUID id, @RequestBody CategoryPostDto categoryPostDto){
 
         Category category = categoryRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Category does not exist"));
 
-        mapStructMapper.updateCategoryFromDto(categoryGetDto,category);
+        mapStructMapper.updateCategoryFromDto(categoryPostDto,category);
 
-        return new ResponseEntity<>(categoryRepository.save(category),HttpStatus.OK);
+        Category categoryToReturn = categoryRepository.save(category);
+
+        return new ResponseEntity<>(mapStructMapper.categoryToCategoryGetDto(categoryToReturn),HttpStatus.OK);
     }
 
     @PostMapping(value = "/categories", consumes = {"application/json"})
@@ -111,7 +114,7 @@ public class CategoryController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/product/{productId}/categories/{categoryId}")
+    @DeleteMapping("/products/{productId}/categories/{categoryId}")
     public ResponseEntity<HttpStatus> deleteCategoryFromProduct(@PathVariable UUID productId, @PathVariable UUID categoryId){
 
         Product product = productRepository.findById(productId)
@@ -123,11 +126,20 @@ public class CategoryController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/categories/{id}")
+    //To optimise
+    /*@DeleteMapping("/categories/{id}")
     public ResponseEntity<HttpStatus> deleteCategory(@PathVariable UUID id){
+
+        Category category = categoryRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Category not found"));
+        if(category.getProducts() != null){
+            category.getProducts().forEach(product -> {
+                product.removeCategory(id);
+                productRepository.save(product);
+            });
+        }
 
         categoryRepository.deleteById(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+    }*/
 }
