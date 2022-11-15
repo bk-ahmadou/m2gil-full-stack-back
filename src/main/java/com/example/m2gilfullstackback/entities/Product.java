@@ -4,10 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
 @Table(name = "Product")
 @Entity
 public class Product {
@@ -36,7 +34,7 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private List<Category> categories = new ArrayList<>();
+    private Set<Category> categories = new HashSet<Category>();
 
     public void removeCategory(UUID categoryId){
         Category category = this.categories.stream().filter(c ->c.getId().equals(categoryId)).findFirst().orElse(null);
@@ -91,11 +89,11 @@ public class Product {
         this.shop = shop;
     }
 
-    public List<Category> getCategories() {
+    public Set<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories) {
+    public void setCategories(Set<Category> categories) {
         this.categories = categories;
     }
 }

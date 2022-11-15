@@ -13,6 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +29,9 @@ public class CategoryController {
     private MapStructMapper mapStructMapper;
     private ProductRepository productRepository;
     private CategoryRepository categoryRepository;
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Autowired
     public CategoryController(MapStructMapper mapStructMapper, ProductRepository productRepository, CategoryRepository categoryRepository){
@@ -126,20 +133,18 @@ public class CategoryController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    //To optimise
-    /*@DeleteMapping("/categories/{id}")
+    @DeleteMapping("/categories/{id}")
+    @Transactional
     public ResponseEntity<HttpStatus> deleteCategory(@PathVariable UUID id){
 
-        Category category = categoryRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Category not found"));
+        Category category = em.find(Category.class, id);
         if(category.getProducts() != null){
             category.getProducts().forEach(product -> {
-                product.removeCategory(id);
-                productRepository.save(product);
+                category.removeProduct(product);
             });
+            em.remove(category);
         }
 
-        categoryRepository.deleteById(id);
-
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }*/
+    }
 }
