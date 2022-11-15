@@ -1,26 +1,20 @@
 package com.example.m2gilfullstackback.controllers;
 
-import com.example.m2gilfullstackback.dtos.CategoryGetDto;
-import com.example.m2gilfullstackback.dtos.CategoryPostDto;
-import com.example.m2gilfullstackback.entities.Category;
-import com.example.m2gilfullstackback.entities.Product;
+import com.example.m2gilfullstackback.dtos.*;
+import com.example.m2gilfullstackback.entities.*;
 import com.example.m2gilfullstackback.exceptions.ResourceNotFoundException;
-import com.example.m2gilfullstackback.repositories.CategoryRepository;
-import com.example.m2gilfullstackback.repositories.MapStructMapper;
-import com.example.m2gilfullstackback.repositories.ProductRepository;
+import com.example.m2gilfullstackback.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -40,12 +34,20 @@ public class CategoryController {
         this.mapStructMapper = mapStructMapper;
     }
 
-    @GetMapping(value = "/categories", produces = {"application/json"})
-    public ResponseEntity<List<CategoryGetDto>> getAllCategories(){
+    @GetMapping(value = "/categories", params = {"page", "size"}, produces = {"application/json"})
+    public ResponseEntity<List<CategoryGetDto>> getAllCategories(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "5", required = false) Integer size
+    ) {
+        if(size.equals(0)){
+            throw new IllegalArgumentException("Page size must not be less than one, Please give another page size");
+        }
+
+        Pageable pageable = PageRequest.of(page,size);
 
         List<CategoryGetDto> categories = new ArrayList<>();
 
-        categoryRepository.findAll().forEach(category -> {
+        categoryRepository.findAll(pageable).forEach(category -> {
             categories.add(mapStructMapper.categoryToCategoryGetDto(category));
         });
 
