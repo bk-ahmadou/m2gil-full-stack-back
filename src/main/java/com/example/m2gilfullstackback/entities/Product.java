@@ -28,7 +28,7 @@ public class Product {
     @JoinColumn(name = "sho_id")
     private Shop shop;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "product_categories",
             joinColumns = @JoinColumn(name = "product_id"),

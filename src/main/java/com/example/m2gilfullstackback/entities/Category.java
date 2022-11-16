@@ -14,7 +14,7 @@ public class Category {
     @Basic
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "categories", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "categories")
     private Set<Product> products = new HashSet<>();
 
     public void removeProduct(Product product){
