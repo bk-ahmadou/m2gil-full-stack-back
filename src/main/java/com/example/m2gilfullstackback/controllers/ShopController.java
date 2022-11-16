@@ -1,75 +1,92 @@
 package com.example.m2gilfullstackback.controllers;
 
-import com.example.m2gilfullstackback.dtos.ProductPostDto;
-import com.example.m2gilfullstackback.dtos.ShopGetDto;
-import com.example.m2gilfullstackback.dtos.ShopPostDto;
-import com.example.m2gilfullstackback.entities.Product;
-import com.example.m2gilfullstackback.entities.Shop;
+import com.example.m2gilfullstackback.dtos.StoreGetDto;
+import com.example.m2gilfullstackback.dtos.StorePostDto;
+import com.example.m2gilfullstackback.dtos.StoreUpdateDto;
+import com.example.m2gilfullstackback.entities.Schedule;
+import com.example.m2gilfullstackback.entities.Store;
+import com.example.m2gilfullstackback.exceptions.ResourceNotFoundException;
 import com.example.m2gilfullstackback.repositories.ProductRepository;
-import com.example.m2gilfullstackback.repositories.ShopRepository;
+import com.example.m2gilfullstackback.repositories.ScheduleRepository;
+import com.example.m2gilfullstackback.repositories.StoreRepository;
 import com.example.m2gilfullstackback.repositories.MapStructMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.*;
 
 @RestController
-@RequestMapping("/shops")
+@RequestMapping("/stores")
 public class ShopController {
     private MapStructMapper mapStructMapper;
-    private ShopRepository shopRepository;
-
+    private StoreRepository storeRepository;
     private ProductRepository productRepository;
+    private ScheduleRepository scheduleRepository;
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Autowired
-    public ShopController(MapStructMapper mapStructMapper, ShopRepository shopRepository, ProductRepository productRepository){
+    public ShopController(
+            MapStructMapper mapStructMapper,
+            StoreRepository storeRepository,
+            ProductRepository productRepository,
+            ScheduleRepository scheduleRepository){
         this.mapStructMapper = mapStructMapper;
-        this.shopRepository = shopRepository;
+        this.storeRepository = storeRepository;
         this.productRepository = productRepository;
+        this.scheduleRepository = scheduleRepository;
     }
 
     @PostMapping(consumes = {"application/json"})
-    public ResponseEntity<Void> create(@RequestBody ShopPostDto shopPostDto) {
-        Shop shop = mapStructMapper.shopPostDtoToShop(shopPostDto);
-        shopRepository.save(shop);
+    public ResponseEntity<Void> create(@RequestBody StorePostDto storePostDto) {
+
+        Store store = mapStructMapper.shopPostDtoToShop(storePostDto);
+        Store storeToReturn = storeRepository.save(store);
+
+        List<Schedule> schedules = storeToReturn.getSchedules();
+        schedules.forEach(schedule -> {
+            schedule.setShop(storeToReturn);
+        });
+
+        scheduleRepository.saveAll(schedules);
+
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = {"application/json"})
-    public  ResponseEntity<Void> updateShop(@PathVariable UUID id, @RequestBody ShopGetDto shopGetDto){
+    public  ResponseEntity<Void> updateShop(@PathVariable UUID id, @RequestBody StoreUpdateDto storeUpdateDto){
 
-        if(!Objects.equals(id, shopGetDto.getId())){
-            throw new IllegalArgumentException("IDs don't match");
-        }
+        Store store = storeRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Store does not exist"));
 
-        Shop shop = shopRepository.findById(id).get();
+        mapStructMapper.updateShopFromDto(storeUpdateDto, store);
 
-        mapStructMapper.updateShopFromDto(shopGetDto,shop);
-
-        shopRepository.save(shop);
+        storeRepository.save(store);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     @GetMapping()
-    public ResponseEntity<List<ShopGetDto>> getAll(){
+    public ResponseEntity<List<StoreGetDto>> getAll(){
 
-        List<ShopGetDto> list = new ArrayList<>();
+        List<StoreGetDto> list = new ArrayList<>();
 
-        shopRepository.findAll().forEach(shop -> list.add(mapStructMapper.shopToShopGetDto(shop)));
+        storeRepository.findAll().forEach(shop -> list.add(mapStructMapper.shopToShopGetDto(shop)));
 
         return new ResponseEntity<>(list,HttpStatus.OK);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<ShopGetDto> getById(
+    public ResponseEntity<StoreGetDto> getById(
             @PathVariable(value = "id") UUID id
     ) {
         return new ResponseEntity<>(
                 mapStructMapper.shopToShopGetDto(
-                        shopRepository.findById(id).get()
+                        storeRepository.findById(id).get()
                 ),
                 HttpStatus.OK
         );

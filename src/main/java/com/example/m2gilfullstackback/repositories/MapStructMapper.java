@@ -3,24 +3,22 @@ package com.example.m2gilfullstackback.repositories;
 import com.example.m2gilfullstackback.dtos.*;
 import com.example.m2gilfullstackback.entities.Category;
 import com.example.m2gilfullstackback.entities.Product;
-import com.example.m2gilfullstackback.entities.Shop;
+import com.example.m2gilfullstackback.entities.Store;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-
-import java.util.Optional;
 
 @Mapper(
         componentModel = "spring"
 )
 public interface MapStructMapper {
     //Shop Mapper
-    ShopGetDto shopToShopGetDto(Shop shop);
-    Shop shopPostDtoToShop(ShopPostDto shopPostDto);
+    StoreGetDto shopToShopGetDto(Store store);
+    Store shopPostDtoToShop(StorePostDto storePostDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateShopFromDto(ShopGetDto dto, @MappingTarget Shop shop);
+    void updateShopFromDto(StoreUpdateDto dto, @MappingTarget Store store);
 
     //Product Mapper
     ProductGetDto productToProductGetDto(Product product);

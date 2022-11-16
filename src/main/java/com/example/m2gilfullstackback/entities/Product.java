@@ -1,8 +1,5 @@
 package com.example.m2gilfullstackback.entities;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.*;
 import java.util.*;
 
@@ -26,7 +23,7 @@ public class Product {
     private String description;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sho_id")
-    private Shop shop;
+    private Store store;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -81,12 +78,12 @@ public class Product {
         this.description = description;
     }
 
-    public Shop getShop() {
-        return shop;
+    public Store getShop() {
+        return store;
     }
 
-    public void setShop(Shop shop) {
-        this.shop = shop;
+    public void setShop(Store store) {
+        this.store = store;
     }
 
     public Set<Category> getCategories() {

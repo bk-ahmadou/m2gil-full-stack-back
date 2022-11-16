@@ -1,17 +1,16 @@
 package com.example.m2gilfullstackback.controllers;
 
-import com.example.m2gilfullstackback.dtos.CategoryGetDto;
 import com.example.m2gilfullstackback.dtos.ProductGetDto;
 import com.example.m2gilfullstackback.dtos.ProductPostDto;
 import com.example.m2gilfullstackback.dtos.ProductWithCategoriesDto;
 import com.example.m2gilfullstackback.entities.Category;
 import com.example.m2gilfullstackback.entities.Product;
-import com.example.m2gilfullstackback.entities.Shop;
+import com.example.m2gilfullstackback.entities.Store;
 import com.example.m2gilfullstackback.exceptions.ResourceNotFoundException;
 import com.example.m2gilfullstackback.repositories.CategoryRepository;
 import com.example.m2gilfullstackback.repositories.MapStructMapper;
 import com.example.m2gilfullstackback.repositories.ProductRepository;
-import com.example.m2gilfullstackback.repositories.ShopRepository;
+import com.example.m2gilfullstackback.repositories.StoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +32,7 @@ public class ProductController {
 
     private MapStructMapper mapStructMapper;
     private ProductRepository productRepository;
-    private ShopRepository shopRepository;
+    private StoreRepository storeRepository;
     private CategoryRepository categoryRepository;
     @PersistenceContext
     private EntityManager em;
@@ -42,12 +41,12 @@ public class ProductController {
     public ProductController(
             MapStructMapper mapStructMapper,
             ProductRepository productRepository,
-            ShopRepository shopRepository,
+            StoreRepository storeRepository,
             CategoryRepository categoryRepository
     ){
         this.mapStructMapper = mapStructMapper;
         this.productRepository = productRepository;
-        this.shopRepository = shopRepository;
+        this.storeRepository = storeRepository;
         this.categoryRepository = categoryRepository;
     }
 
@@ -61,14 +60,14 @@ public class ProductController {
             throw new IllegalArgumentException("Page size must not be less than one, Please give another page size");
         }
 
-        if(!shopRepository.existsById(storeId)){
+        if(!storeRepository.existsById(storeId)){
             throw  new ResourceNotFoundException("Shop Not found");
         }
 
         Pageable pageable = PageRequest.of(page,size);
 
         List<ProductWithCategoriesDto> products = new ArrayList<>();
-        productRepository.findProductsByShopId(storeId, pageable).forEach(product -> {
+        productRepository.findProductsByStoreId(storeId, pageable).forEach(product -> {
             products.add(mapStructMapper.productToProductWithCategoriesDto(product));
         });
 
@@ -108,9 +107,9 @@ public class ProductController {
 
         Category category = categoryRepository.findById(categoryId).orElseThrow(()->new ResourceNotFoundException("Category not found"));
 
-        Shop store = shopRepository.findById(storeId).orElseThrow(()->new ResourceNotFoundException("Store not found"));
+        Store store = storeRepository.findById(storeId).orElseThrow(()->new ResourceNotFoundException("Store not found"));
 
-        productRepository.findProductsByCategoriesAndShop(category, store).forEach(product -> {
+        productRepository.findProductsByCategoriesAndStore(category, store).forEach(product -> {
             products.add(mapStructMapper.productToProductGetDto(product));
         });
 
@@ -125,7 +124,7 @@ public class ProductController {
 
         Product entity = mapStructMapper.productPostDtoToProduct(productPostDto);
 
-        shopRepository.findById(storeId).map(shop -> {
+        storeRepository.findById(storeId).map(shop -> {
             entity.setShop(shop);
             return productRepository.save(entity);
         }).orElseThrow(()-> new ResourceNotFoundException("Not found shop by id "+ storeId));

@@ -5,8 +5,8 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "Shop")
-public class Shop {
+@Table(name = "Store")
+public class Store {
     @Id
     @GeneratedValue
     private UUID id;
@@ -18,23 +18,15 @@ public class Shop {
     @Column
     @Basic
     private Boolean isHoliday;
-
-    @Basic
-    @Temporal(TemporalType.TIME)
-    @Column(name = "opening_time", nullable = false)
-    private Date openingTime;
-
-    @Basic
-    @Column(name = "closing_time", nullable = false)
-    @Temporal(TemporalType.TIME)
-    private Date closingTime;
-
     @Basic
     @Temporal(TemporalType.TIMESTAMP)
     private Date CreationDateTime = new Date();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "shop")
-    private List<Product> products;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
+    private List<Product> products = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
+    private List<Schedule> schedules = new ArrayList<>(7);
 
     public UUID getId() {
         return id;
@@ -59,22 +51,6 @@ public class Shop {
     public void setHoliday(Boolean holiday) {
         isHoliday = holiday;
     }
-
-    public Date getOpeningTime() {
-        return openingTime;
-    }
-
-    public void setOpeningTime(Date openingTime) {
-        this.openingTime = openingTime;
-    }
-
-    public Date getClosingTime() {
-        return closingTime;
-    }
-
-    public void setClosingTime(Date closingTime) {
-        this.closingTime = closingTime;
-    }
     public List<Product> getProducts() {
         return products;
     }
@@ -88,5 +64,13 @@ public class Shop {
 
     public void setCreationDateTime(Date creationDateTime) {
         CreationDateTime = creationDateTime;
+    }
+
+    public List<Schedule> getSchedules() {
+        return schedules;
+    }
+
+    public void setSchedules(List<Schedule> schedules) {
+        this.schedules = schedules;
     }
 }

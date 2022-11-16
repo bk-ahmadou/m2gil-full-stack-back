@@ -2,13 +2,11 @@ package com.example.m2gilfullstackback.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
-public class ShopGetDto {
+public class StoreGetDto {
     public UUID getId() {
         return id;
     }
@@ -32,21 +30,12 @@ public class ShopGetDto {
     public void setHoliday(Boolean holiday) {
         isHoliday = holiday;
     }
-
-    public Date getOpeningTime() {
-        return openingTime;
+    public List<SchedulePostDto> getSchedules() {
+        return schedules;
     }
 
-    public void setOpeningTime(Date openingTime) {
-        this.openingTime = openingTime;
-    }
-
-    public Date getClosingTime() {
-        return closingTime;
-    }
-
-    public void setClosingTime(Date closingTime) {
-        this.closingTime = closingTime;
+    public void setSchedules(List<SchedulePostDto> schedules) {
+        this.schedules = schedules;
     }
 
     @JsonProperty("id")
@@ -60,11 +49,7 @@ public class ShopGetDto {
     @JsonProperty("isHoliday")
     private Boolean isHoliday;
 
-    @NotNull
-    @JsonProperty("openingTime")
-    private Date openingTime;
+    @JsonProperty("schedules")
+    private List<SchedulePostDto> schedules;
 
-    @NotNull
-    @JsonProperty("closingTime")
-    private Date closingTime;
 }
