@@ -9,18 +9,11 @@ public class StorePostDto {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("isHoliday")
-    private Boolean isHoliday;
+    @JsonProperty("holiday")
+    private Boolean holiday;
+
     @JsonProperty("schedules")
     Set<SchedulePostDto> schedules = new HashSet<>(7);
-
-    public Set<SchedulePostDto> getSchedules() {
-        return schedules;
-    }
-
-    public void setSchedules(Set<SchedulePostDto> schedules) {
-        this.schedules = schedules;
-    }
 
     public String getName() {
         return name;
@@ -31,11 +24,18 @@ public class StorePostDto {
     }
 
     public Boolean getHoliday() {
-        return isHoliday;
+        return holiday;
     }
 
     public void setHoliday(Boolean holiday) {
-        isHoliday = holiday;
+        this.holiday = holiday;
     }
 
+    public Set<SchedulePostDto> getSchedules() {
+        return schedules;
+    }
+
+    public void setSchedules(Set<SchedulePostDto> schedules) {
+        this.schedules = schedules;
+    }
 }

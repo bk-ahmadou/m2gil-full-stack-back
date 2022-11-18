@@ -17,12 +17,33 @@ public class Schedule {
     private Date openingTime;
 
     @Basic
+    @Temporal(TemporalType.TIME)
+    @Column(name = "closing_time", nullable = false)
+    private Date closingTime;
+
+    @Basic
     @Column(name = "day_of_week")
     private DayOfWeek dayOfWeek;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sho_id")
     private Store store;
+
+    public Date getClosingTime() {
+        return closingTime;
+    }
+
+    public void setClosingTime(Date closingTime) {
+        this.closingTime = closingTime;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
 
     public UUID getId() {
         return id;

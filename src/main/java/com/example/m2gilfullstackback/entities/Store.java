@@ -17,7 +17,7 @@ public class Store {
 
     @Column
     @Basic
-    private Boolean isHoliday;
+    private Boolean holiday;
     @Basic
     @Temporal(TemporalType.TIMESTAMP)
     private Date CreationDateTime = new Date();
@@ -25,7 +25,7 @@ public class Store {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
     private List<Product> products = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "store", orphanRemoval = true)
     private List<Schedule> schedules = new ArrayList<>(7);
 
     public UUID getId() {
@@ -45,17 +45,11 @@ public class Store {
     }
 
     public Boolean getHoliday() {
-        return isHoliday;
+        return holiday;
     }
 
     public void setHoliday(Boolean holiday) {
-        isHoliday = holiday;
-    }
-    public List<Product> getProducts() {
-        return products;
-    }
-    public void setProducts(List<Product> products) {
-        this.products = products;
+        this.holiday = holiday;
     }
 
     public Date getCreationDateTime() {
@@ -64,6 +58,14 @@ public class Store {
 
     public void setCreationDateTime(Date creationDateTime) {
         CreationDateTime = creationDateTime;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     public List<Schedule> getSchedules() {

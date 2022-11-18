@@ -1,8 +1,6 @@
 package com.example.m2gilfullstackback.controllers;
 
-import com.example.m2gilfullstackback.dtos.StoreGetDto;
-import com.example.m2gilfullstackback.dtos.StorePostDto;
-import com.example.m2gilfullstackback.dtos.StoreUpdateDto;
+import com.example.m2gilfullstackback.dtos.*;
 import com.example.m2gilfullstackback.entities.Schedule;
 import com.example.m2gilfullstackback.entities.Store;
 import com.example.m2gilfullstackback.exceptions.ResourceNotFoundException;
@@ -17,11 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.*;
 
 @RestController
 @RequestMapping("/stores")
-public class ShopController {
+public class StoreController {
     private MapStructMapper mapStructMapper;
     private StoreRepository storeRepository;
     private ProductRepository productRepository;
@@ -31,7 +30,7 @@ public class ShopController {
     private EntityManager em;
 
     @Autowired
-    public ShopController(
+    public StoreController(
             MapStructMapper mapStructMapper,
             StoreRepository storeRepository,
             ProductRepository productRepository,
@@ -67,7 +66,21 @@ public class ShopController {
 
         storeRepository.save(store);
 
+        if(!storeUpdateDto.getSchedules().isEmpty()){
+            updateStoreSchedules(storeUpdateDto.getSchedules());
+        }
+
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    public void updateStoreSchedules(@RequestBody List<ScheduleGetDto> dtos){
+
+        dtos.forEach(dto -> {
+            Schedule schedule = scheduleRepository.findById(dto.getId()).get();
+            mapStructMapper.updateSchedulesFromDto(dto,schedule);
+            scheduleRepository.save(schedule);
+        });
+
     }
 
 
@@ -90,5 +103,12 @@ public class ShopController {
                 ),
                 HttpStatus.OK
         );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteStore(@PathVariable UUID id){
+
+        storeRepository.deleteById(id);
+        return new  ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

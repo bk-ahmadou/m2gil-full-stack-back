@@ -75,7 +75,7 @@ public class ProductController {
     }
 
     @GetMapping(value = "/products", params = {"page", "size"}, produces = {"application/json"})
-    public ResponseEntity<List<ProductGetDto>> getAllCategories(
+    public ResponseEntity<List<ProductGetDto>> getAllProducts(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "5", required = false) Integer size
     ) {

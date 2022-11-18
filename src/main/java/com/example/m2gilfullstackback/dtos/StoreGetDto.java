@@ -7,6 +7,21 @@ import java.util.List;
 import java.util.UUID;
 
 public class StoreGetDto {
+
+    @JsonProperty("id")
+    private UUID id;
+
+    @NotNull
+    @JsonProperty("name")
+    private String name;
+
+    @NotNull
+    @JsonProperty("holiday")
+    private Boolean holiday;
+
+    @JsonProperty("schedules")
+    private List<SchedulePostDto> schedules;
+
     public UUID getId() {
         return id;
     }
@@ -24,12 +39,13 @@ public class StoreGetDto {
     }
 
     public Boolean getHoliday() {
-        return isHoliday;
+        return holiday;
     }
 
     public void setHoliday(Boolean holiday) {
-        isHoliday = holiday;
+        this.holiday = holiday;
     }
+
     public List<SchedulePostDto> getSchedules() {
         return schedules;
     }
@@ -37,19 +53,4 @@ public class StoreGetDto {
     public void setSchedules(List<SchedulePostDto> schedules) {
         this.schedules = schedules;
     }
-
-    @JsonProperty("id")
-    private UUID id;
-
-    @NotNull
-    @JsonProperty("name")
-    private String name;
-
-    @NotNull
-    @JsonProperty("isHoliday")
-    private Boolean isHoliday;
-
-    @JsonProperty("schedules")
-    private List<SchedulePostDto> schedules;
-
 }

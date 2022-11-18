@@ -3,6 +3,7 @@ package com.example.m2gilfullstackback.repositories;
 import com.example.m2gilfullstackback.dtos.*;
 import com.example.m2gilfullstackback.entities.Category;
 import com.example.m2gilfullstackback.entities.Product;
+import com.example.m2gilfullstackback.entities.Schedule;
 import com.example.m2gilfullstackback.entities.Store;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -35,6 +36,10 @@ public interface MapStructMapper {
     Category categoryGetDtoToCategory(CategoryGetDto categoryGetDto);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateCategoryFromDto(CategoryPostDto dto, @MappingTarget Category category);
+
+    //Schedules
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateSchedulesFromDto(ScheduleGetDto dto, @MappingTarget Schedule schedule);
 }
 
 
