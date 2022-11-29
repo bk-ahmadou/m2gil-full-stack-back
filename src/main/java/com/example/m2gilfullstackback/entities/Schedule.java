@@ -26,7 +26,7 @@ public class Schedule {
     private DayOfWeek dayOfWeek;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "sho_id")
+    @JoinColumn(name = "store_id")
     private Store store;
 
     public Date getClosingTime() {

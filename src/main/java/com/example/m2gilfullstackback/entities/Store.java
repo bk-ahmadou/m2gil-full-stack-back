@@ -75,4 +75,10 @@ public class Store {
     public void setSchedules(List<Schedule> schedules) {
         this.schedules = schedules;
     }
+
+    public  void removeAllStoreProduct(){
+        this.products.forEach(product -> {
+            product.setShop(null);
+        });
+    }
 }

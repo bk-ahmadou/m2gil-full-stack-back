@@ -1,5 +1,8 @@
 package com.example.m2gilfullstackback.entities;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -22,6 +25,7 @@ public class Product {
     @Basic
     private String description;
     @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "sho_id")
     private Store store;
 
@@ -39,6 +43,9 @@ public class Product {
             this.categories.remove(category);
             category.getProducts().remove(this);
         }
+    }
+
+    public void removeAllStoreProduct(){
     }
 
     public void addCategory(Category category){

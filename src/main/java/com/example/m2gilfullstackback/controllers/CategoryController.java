@@ -24,8 +24,8 @@ public class CategoryController {
     private ProductRepository productRepository;
     private CategoryRepository categoryRepository;
 
-    @PersistenceContext
-    private EntityManager em;
+    /*@PersistenceContext
+    private EntityManager em;*/
 
     @Autowired
     public CategoryController(MapStructMapper mapStructMapper, ProductRepository productRepository, CategoryRepository categoryRepository){
@@ -139,13 +139,23 @@ public class CategoryController {
     @Transactional
     public ResponseEntity<HttpStatus> deleteCategory(@PathVariable UUID id){
 
-        Category category = em.find(Category.class, id);
+        /*Category category = em.find(Category.class, id);
         if(category.getProducts() != null){
             category.getProducts().forEach(product -> {
                 category.removeProduct(product);
             });
             em.remove(category);
+        }*/
+
+        Category category = categoryRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Category does not exist"));
+
+        if(category.getProducts() != null){
+            category.getProducts().forEach(product -> {
+                category.removeProduct(product);
+            });
         }
+
+        categoryRepository.delete(category);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

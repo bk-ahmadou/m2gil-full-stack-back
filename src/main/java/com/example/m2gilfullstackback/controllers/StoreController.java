@@ -1,6 +1,7 @@
 package com.example.m2gilfullstackback.controllers;
 
 import com.example.m2gilfullstackback.dtos.*;
+import com.example.m2gilfullstackback.entities.Product;
 import com.example.m2gilfullstackback.entities.Schedule;
 import com.example.m2gilfullstackback.entities.Store;
 import com.example.m2gilfullstackback.exceptions.ResourceNotFoundException;
@@ -106,9 +107,17 @@ public class StoreController {
     }
 
     @DeleteMapping("/{id}")
+    @Transactional
     public ResponseEntity<HttpStatus> deleteStore(@PathVariable UUID id){
+        List<Product> products = productRepository.findProductsByStoreId(id);
+        for(Product product : products){
+            product.setShop(null);
+        }
+        productRepository.saveAll(products);
 
+        Store store = storeRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("store what you want remove does not exist"));
         storeRepository.deleteById(id);
+
         return new  ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -34,8 +34,8 @@ public class ProductController {
     private ProductRepository productRepository;
     private StoreRepository storeRepository;
     private CategoryRepository categoryRepository;
-    @PersistenceContext
-    private EntityManager em;
+    /*@PersistenceContext
+    private EntityManager em;*/
 
     @Autowired
     public ProductController(
@@ -119,8 +119,16 @@ public class ProductController {
 
         return new ResponseEntity<>(products,HttpStatus.OK);
     }
+
+    @PostMapping(value = "}/products", consumes = {"application/json"})
+    public ResponseEntity<Void> createProduct(@RequestBody ProductPostDto productPostDto) {
+
+        Product entity = mapStructMapper.productPostDtoToProduct(productPostDto);
+        productRepository.save(entity);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
     @PostMapping(value = "/stores/{storeId}/products", consumes = {"application/json"})
-    public ResponseEntity<Void> createProduct(@PathVariable UUID storeId, @RequestBody ProductPostDto productPostDto){
+    public ResponseEntity<Void> associateProductToStore(@PathVariable UUID storeId, @RequestBody ProductPostDto productPostDto){
 
         Product entity = mapStructMapper.productPostDtoToProduct(productPostDto);
 
@@ -150,15 +158,21 @@ public class ProductController {
 
     @DeleteMapping("/products/{id}")
     @Transactional
-    public ResponseEntity<HttpStatus> deleteCategory(@PathVariable UUID id){
+    public ResponseEntity<HttpStatus> deleteProduct(@PathVariable UUID id){
 
-        Product product = em.find(Product.class, id);
+        /*Product product = em.find(Product.class, id);
         if(product.getCategories() != null){
             product.getCategories().forEach(category -> {
                 product.removeCategory(category.getId());
             });
             em.remove(product);
-        }
+        }*/
+
+        Product product = productRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("product does not exist"));
+
+        product.getCategories().removeAll(product.getCategories());
+
+        productRepository.delete(product);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
